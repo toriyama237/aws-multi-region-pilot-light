@@ -20,3 +20,35 @@ module "network_secondary" {
   name       = "${var.project_name}-secondary"
   cidr_block = var.secondary_vpc_cidr
 }
+
+module "database" {
+  source = "./modules/database"
+  providers = {
+    aws.primary   = aws
+    aws.secondary = aws.secondary
+  }
+
+  name             = var.project_name
+  db_name          = var.db_name
+  username         = var.db_username
+  instance_class   = var.db_instance_class
+  secondary_region = var.secondary_region
+
+  primary_vpc_id       = module.network_primary.vpc_id
+  primary_subnet_ids   = module.network_primary.private_subnet_ids
+  secondary_vpc_id     = module.network_secondary.vpc_id
+  secondary_subnet_ids = module.network_secondary.private_subnet_ids
+
+  primary_app_security_group_id   = aws_security_group.app_primary.id
+  secondary_app_security_group_id = aws_security_group.app_secondary.id
+}
+
+module "storage" {
+  source = "./modules/storage"
+  providers = {
+    aws.primary   = aws
+    aws.secondary = aws.secondary
+  }
+
+  name = var.project_name
+}
