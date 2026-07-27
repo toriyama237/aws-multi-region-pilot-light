@@ -42,3 +42,13 @@ module "database" {
   primary_app_security_group_id   = aws_security_group.app_primary.id
   secondary_app_security_group_id = aws_security_group.app_secondary.id
 }
+
+module "storage" {
+  source = "./modules/storage"
+  providers = {
+    aws.primary   = aws
+    aws.secondary = aws.secondary
+  }
+
+  name = var.project_name
+}
