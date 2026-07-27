@@ -38,7 +38,16 @@ class Database:
     def open(self) -> None:
         self._pool.open()
         with self.connection() as conn:
-            conn.execute(SCHEMA)
+            # During a failover the pilot light instances boot while the
+            # local database is still a read replica. Any DDL, even
+            # CREATE TABLE IF NOT EXISTS, aborts in a read-only
+            # transaction and would crash-loop the service until the
+            # promotion completes. Skipping schema init on a replica
+            # lets the instance come up, serve its health endpoint, and
+            # start writing the moment the promotion lands.
+            in_recovery = conn.execute("SELECT pg_is_in_recovery()").fetchone()
+            if not in_recovery["pg_is_in_recovery"]:
+                conn.execute(SCHEMA)
 
     def close(self) -> None:
         self._pool.close()

@@ -23,6 +23,9 @@ class Settings:
     db_name: str = field(default_factory=lambda: os.environ.get("DB_NAME", "notes"))
     db_user: str = field(default_factory=lambda: _require("DB_USER"))
     db_password: str = field(default_factory=lambda: _require("DB_PASSWORD"))
+    # TLS stays mandatory by default; only the local drill environment,
+    # where PostgreSQL runs in plain containers, relaxes it explicitly.
+    db_sslmode: str = field(default_factory=lambda: os.environ.get("DB_SSLMODE", "require"))
     # Surfaced in every response so a failover is observable from the client side.
     region: str = field(default_factory=lambda: os.environ.get("APP_REGION", "unknown"))
 
@@ -31,7 +34,7 @@ class Settings:
         return (
             f"host={self.db_host} port={self.db_port} dbname={self.db_name} "
             f"user={self.db_user} password={self.db_password} "
-            f"connect_timeout=3 sslmode=require"
+            f"connect_timeout=3 sslmode={self.db_sslmode}"
         )
 
 
