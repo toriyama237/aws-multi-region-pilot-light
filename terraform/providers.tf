@@ -20,6 +20,18 @@ provider "aws" {
   }
 }
 
+# Route 53 is a global service but its health check metrics only exist
+# in us-east-1, so the alarm watching the failover signal must live
+# there regardless of the two workload regions.
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+
+  default_tags {
+    tags = local.common_tags
+  }
+}
+
 locals {
   common_tags = {
     Project   = var.project_name
