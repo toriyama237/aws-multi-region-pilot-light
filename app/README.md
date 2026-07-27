@@ -27,6 +27,7 @@ All configuration comes from the environment. The Terraform user data injects th
 | DB_NAME | no | Defaults to notes. |
 | DB_USER | yes | Database user. |
 | DB_PASSWORD | yes | Database password, sourced from Secrets Manager at boot. |
+| DB_SSLMODE | no | Defaults to require. Only the local drill, where PostgreSQL runs in plain containers, relaxes it. |
 | APP_REGION | no | Region label surfaced in responses, defaults to unknown. |
 
 ## Health check design
