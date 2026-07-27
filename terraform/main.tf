@@ -100,3 +100,21 @@ module "compute_secondary" {
   db_host        = module.database.replica_endpoint
   db_secret_name = module.database.secret_name
 }
+
+module "dns" {
+  source = "./modules/dns"
+  providers = {
+    aws           = aws
+    aws.us_east_1 = aws.us_east_1
+  }
+
+  name           = var.project_name
+  domain_name    = var.domain_name
+  hosted_zone_id = var.hosted_zone_id
+  alarm_email    = var.alarm_email
+
+  primary_alb_dns_name   = module.compute_primary.alb_dns_name
+  primary_alb_zone_id    = module.compute_primary.alb_zone_id
+  secondary_alb_dns_name = module.compute_secondary.alb_dns_name
+  secondary_alb_zone_id  = module.compute_secondary.alb_zone_id
+}
