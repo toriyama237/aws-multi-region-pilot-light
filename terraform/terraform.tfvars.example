@@ -1,0 +1,13 @@
+# Copy to terraform.tfvars and adjust. Only the two values below are
+# mandatory, everything else has sensible defaults for a demo deployment.
+
+domain_name    = "api.example.com"
+hosted_zone_id = "Z0123456789ABCDEFGHIJ"
+
+# project_name             = "notes"
+# primary_region           = "eu-west-1"
+# secondary_region         = "eu-west-3"
+# app_instance_type        = "t3.micro"
+# primary_desired_capacity = 2
+# db_instance_class        = "db.t3.micro"
+# alarm_email              = "you@example.com"
