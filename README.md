@@ -61,6 +61,16 @@ curl -si https://<your domain>/health | grep -i x-serving-region
 
 Expect roughly 170 USD per month while it runs. Destroy it when you are done experimenting; everything rebuilds from this repository.
 
+## Testing without an AWS account
+
+The failover logic can be exercised on a laptop before spending anything:
+
+```bash
+./scripts/local-drill.sh
+```
+
+The script builds the whole pattern locally with Docker, a PostgreSQL primary, a real streaming replica standing in for the RDS cross-region replica, and both regional instances of the actual API. It then kills the primary database, verifies that the primary health endpoint goes red (the signal Route 53 acts on), promotes the replica and measures the time to the first accepted write and whether any pre-disaster data was lost. It runs in about half a minute and cleans up after itself. The first run of this drill caught a real bug, schema initialization crashing against a read-only replica, which is exactly what drills are for.
+
 ## Running a failover drill
 
 Break the primary region however you like, the honest way being to scale its Auto Scaling group to zero and watch /health go red. Route 53 flips DNS without you. Then:

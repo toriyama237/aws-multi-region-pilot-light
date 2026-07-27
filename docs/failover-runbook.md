@@ -94,6 +94,8 @@ None of this is urgent. The system runs correctly from the secondary region for 
 
 Run a full drill at least quarterly. An untested runbook is a hypothesis.
 
+A local simulation of the whole pattern also exists, see scripts/local-drill.sh: real application code, a real PostgreSQL streaming replica and a real promotion, with Route 53 and RDS themselves simulated. It validates the failover logic on a laptop in under a minute and caught one real bug (schema initialization crashing on a read-only replica) before any AWS spend.
+
 | Date | Trigger | DNS flip | DB promotion | First healthy instance | Total RTO | Measured RPO | Notes |
 | ---- | ------- | -------- | ------------ | ---------------------- | --------- | ------------ | ----- |
-| | | | | | | | |
+| 2026-07-27 | Local simulation, primary database killed | n/a, simulated | instant (pg_promote) | 0.4s after promotion | 0.4s data layer only | zero, all pre-disaster writes survived | Local drill, add real RDS promotion time (5 to 10 min) and human reaction for the AWS figure |
