@@ -22,13 +22,9 @@ The pattern in one paragraph: eu-west-1 serves all traffic. eu-west-3 continuous
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    C[Client] --> R53[Route 53 failover records]
-    R53 -->|healthy| P[eu-west-1: ALB, ASG x2, RDS primary, S3]
-    R53 -.->|primary check fails| S[eu-west-3: ALB, ASG x0, RDS replica, S3 replica]
-    P ==>|async replication| S
-```
+<p align="center">
+  <img src="docs/architecture.png" alt="Pilot light architecture: Route 53 failover, primary region, standby region, and recovery operations" width="720" />
+</p>
 
 The full picture, including the seven-link chain from a failing database query to a DNS flip, is in [docs/architecture.md](docs/architecture.md).
 
