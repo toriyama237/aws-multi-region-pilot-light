@@ -6,6 +6,8 @@ A notes API runs behind an Application Load Balancer in eu-west-1, backed by Pos
 
 ## Diagram
 
+![Pilot light architecture](architecture.png)
+
 ```mermaid
 flowchart TB
     subgraph clients [Clients]
